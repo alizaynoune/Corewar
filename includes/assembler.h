@@ -17,8 +17,8 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <fcntl.h>
-//# include "op.h"
-# include "../libprintf/includes/ft_printf.h"
+# include "op.h"
+# include "ft_printf.h"
 
 # define PROG_NAME_LENGTH	(128)
 # define COMMENT_LENGTH		(2048)
@@ -39,82 +39,98 @@
  **	(1 << 9) `String literal`
  */
 
-#define LABEL_T				(0x01)
-#define OPERATION_T			(0x02)
-#define REGISTRY_T			(0x04)
-#define SEPARATOR_T			(0x08)
-#define DIRECT_LABEL_T		(0x10)
-#define DIRECT_T			(0x20)
-#define INDIRECT_T			(0x40)
-#define INDIRECT_LABEL_T	(0x80)
-#define	WHITESPACE_T		(0x100)
-#define	STRING_LITERAL_T	(0x200)
-
-typedef struct		s_line
-{
-	char			*line;
-	unsigned int	nb_line;
-}					t_line;
-
-typedef struct      s_header
-{
-	unsigned int    magic;
-	char            prog_name[PROG_NAME_LENGTH + 1];
-	unsigned int    prog_size;
-	char            comment[COMMENT_LENGTH + 1];
-}                   t_header;
+#define _REG			(1)
+#define _DIR			(2)
+#define _IND			(4)
+#define _DIR_L			(8)
+#define _IND_L			(16)
+#define LABEL			(32)
+#define OPERATION		(64)
+#define SEPARATOR		(128)
+#define	STRING			(256)
+#define COMM			(512)
+#define END			(1024)
 
 typedef struct		s_arg
 {
-	int				type;
-	int				value;
-	int8_t			separator;
+	int		type;
+	int		value;
+	int8_t		separator;
 	struct s_arg	*next;
-}					t_arg;
+}			t_arg;
 
-typedef struct				s_instruction
+typedef struct			s_instruction
 {
-	char					*lebl;
-	short					nb_arg;
-	int						intstruct;
-	t_arg					*arg;
+	char			*lebl;
+	short			nb_arg;
+	int			intstruct;
+	t_arg			*arg;
 	struct s_instruction	*next;
-}							t_instruction;
-
-typedef struct		s_data
-{
-	int				fd_assm;
-	int				fd_exec;
-	t_header		header;
-	t_line			lines;
-	t_instruction	*instruction;
-}					t_data;
-
-/*typedef struct		s_instruction
-{
-	char			*label;
-	char			*operation;
-	short			nparams;
-	unsigned char	params[MAX_OP_PARAMS];	
-	int				size;
-}					t_instruction;
-
-typedef struct		s_op
-{
-	char			*operation;
-	short			nparams;
-	unsigned char	params[MAX_OP_PARAMS];	
-	unsigned char	opcode;
-	short			exec_cycle;
-	char			*description;
-	//... 2 other fields;
-}					t_op;
+}				t_instruction;
 
 typedef struct		s_token
 {
-	char			type;//stores the code of the type
-	char			*content;
+	int		type;//stores the code of the type
+	char		*content;
+	size_t		n_l;
+	size_t		n_c;
+	int		n_op;
 	struct s_token	*next;
-}					t_token;
+}			t_token;
+
+typedef struct		s_line
+{
+	char		*str;
+	size_t		nb_line;
+	size_t		n_l;
+	size_t		n_c;
+	size_t		i;
+}			t_line;
+
+typedef struct			s_operation
+{
+	char			*name;
+	short			n_arg;
+	short			arg1;
+	short			arg2;
+	short			arg3;
+}				t_operation;
+
+typedef struct		s_data
+{
+	t_operation	*op;
+	int		fd_assm;
+	int		fd_exec;
+	header_t	header;
+	t_line		line;
+	t_token		*token;
+	t_instruction	*instruction;
+}			t_data;
+
+/*typedef struct		s_instruction
+  {
+  char			*label;
+  char			*operation;
+  short			nparams;
+  unsigned char	params[MAX_OP_PARAMS];	
+  int				size;
+  }					t_instruction;
+
+  typedef struct		s_op
+  {
+  char			*operation;
+  short			nparams;
+  unsigned char	params[MAX_OP_PARAMS];	
+  unsigned char	opcode;
+  short			exec_cycle;
+  char			*description;
+//... 2 other fields;
+}					t_op;
 */
+void		read_file(t_data *d);
+void		ft_error_lixic(t_data *d);
+void		error_malloc(t_data *d);
+void		message_exit(char *str);
+void		free_data(t_data *d);
+void		ft_syntax(t_data *d);
 #endif
