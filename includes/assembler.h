@@ -20,8 +20,6 @@
 # include "op.h"
 # include "ft_printf.h"
 
-# define PROG_NAME_LENGTH	(128)
-# define COMMENT_LENGTH		(2048)
 # define MAX_OP_PARAMS		(3)
 
 /*
@@ -101,7 +99,7 @@ typedef struct		s_data
 	t_operation	*op;
 	int		fd_assm;
 	int		fd_exec;
-	header_t	header;
+	header_t	*header;
 	t_line		line;
 	t_token		*token;
 	t_instruction	*instruction;

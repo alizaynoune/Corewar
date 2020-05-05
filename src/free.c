@@ -19,5 +19,7 @@ void		free_data(t_data *d)
 		ft_strdel(&tmp->content);
 		free(tmp);
 	}
+	if (d->header)
+		free(d->header);
 	free(d);
 }

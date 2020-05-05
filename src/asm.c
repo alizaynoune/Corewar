@@ -54,8 +54,10 @@ int		main(int ac, char **av)
 	data = NULL;
 	if (ac < 2)
 		message_exit("Usage: ./asm <sorcefile>");
-	if (!(data = ft_memalloc(sizeof data)))
+	if (!(data = ft_memalloc(sizeof(t_data))))
 		message_exit("Error malloc");
+	if (!(data->header = ft_memalloc(sizeof(header_t))))
+		error_malloc(data);
 	data->op = op;
 	ft_open_file(data, av[ac - 1]);
 	read_file(data);

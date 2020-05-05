@@ -13,4 +13,4 @@ SRC = asm.c	\
 OBJ = $(addprefix $(P_SRC), $(SRC))
 
 all:
-	$(GCC) $(OBJ) -L $(P_LIB) -lprintf -I $(INC) -I $(INC_L) -o $(NAME)
+	$(GCC) $(OBJ) -L $(P_LIB) -lall -I $(INC) -I $(INC_L) -o $(NAME)
