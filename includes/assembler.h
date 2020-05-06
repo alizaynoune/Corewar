@@ -131,4 +131,6 @@ void		error_malloc(t_data *d);
 void		message_exit(char *str);
 void		free_data(t_data *d);
 void		ft_syntax(t_data *d);
+void		print_d(t_data *d); //test
+
 #endif

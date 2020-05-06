@@ -62,6 +62,7 @@ int		main(int ac, char **av)
 	ft_open_file(data, av[ac - 1]);
 	read_file(data);
 	ft_syntax(data);
+	//print_d(data);
 	free_data(data);
 	ft_printf("Successfuly\n");
 	return (1);

@@ -1,14 +1,34 @@
 #include "assembler.h"
 
+void		print_code_arg(int arg)
+{
+	arg == 1 ? ft_printf("REG"): 0;
+	arg == 2 ? ft_printf("DIR"): 0;
+	arg == 3 ? ft_printf("REG | DIR"): 0;
+	arg == 4 ? ft_printf("IND"): 0;
+	arg == 5 ? ft_printf("REG | IND"): 0;
+	arg == 6 ? ft_printf("IND | DIR"): 0;
+	arg == 7 ? ft_printf("REG | DIR | IND"): 0;
+}
+
+void		print_right_syntax(t_operation op)
+{
+	ft_printf("  => The right syntax of \"%s\" is [ ",op.name);
+	op.arg1 > 0 ? print_code_arg(op.arg1): 0;
+	op.arg2 > 0 ? ft_printf(", "): 0;
+	op.arg2 > 0 ? print_code_arg(op.arg2): 0;
+	op.arg3 > 0 ? ft_printf(", "): 0;
+	op.arg3 > 0 ? print_code_arg(op.arg3): 0;
+	ft_printf(" ]");
+}
+
 void		error_syntax(t_token *tk, t_data *d)
 {
 	
-	if (tk)
-		ft_printf("Syntax error at token [%03d %03d]", tk->n_l, tk->n_c);
+	ft_printf("Syntax error at token [%03d %03d]", tk->n_l, tk->n_c);
 	if (tk && tk->n_op >= 0)
-		ft_printf(" =>%s", d->op[tk->n_op].name);
-	if (tk && d)
-		ft_printf("\n");
+		print_right_syntax(d->op[tk->n_op]);
+	ft_printf("\n");
 	free_data(d);
 	exit(1);
 }
@@ -112,11 +132,25 @@ t_token		*ft_get_cmd(t_data *d)
 	return (tk);
 }
 
+void		free_cmd_from_list(t_data *d, t_token *tk)
+{
+	t_token		*tmp;
+
+	while (d->token != tk)
+	{
+		tmp = d->token;
+		d->token = d->token->next;
+		free(tmp->content);
+		free(tmp);
+	}
+}
+
 void		ft_syntax(t_data *d)
 {
 	t_token		*tk;
 
 	tk = ft_get_cmd(d);
+	free_cmd_from_list(d, tk);
 	while (tk)
 	{
 		if (tk->n_op >= 0)
