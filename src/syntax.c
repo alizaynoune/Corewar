@@ -24,11 +24,21 @@ void		print_right_syntax(t_operation op)
 
 void		error_syntax(t_token *tk, t_data *d)
 {
-	
-	ft_printf("Syntax error at token [%03d %03d]", tk->n_l, tk->n_c);
+	if (tk)
+		ft_printf("Syntax error at token [%03d %03d]", tk->n_l, tk->n_c);
 	if (tk && tk->n_op >= 0)
 		print_right_syntax(d->op[tk->n_op]);
 	ft_printf("\n");
+	free_data(d);
+	exit(1);
+}
+
+void		error_end(t_token *tk, t_data *d, t_token *tmp)
+{
+	if (!tmp)
+		ft_printf("Syntax error you forgot newline in end of file\n");
+	else
+		error_syntax(tk, d);
 	free_data(d);
 	exit(1);
 }
@@ -69,14 +79,20 @@ t_token		*ft_args(t_token *tk, t_data *d)
 
 	i = 0;
 	tmp = tk->next;
-	while (i < d->op[tk->n_op].n_arg)
+	while (tmp && i < d->op[tk->n_op].n_arg && tmp->type != END)
 	{
 		if (tmp->type != SEPARATOR && !error_args(tmp->type, d->op[tk->n_op], i++))
 			error_syntax(tk, d);
 		tmp = tmp->next;
+		if (tmp && tmp->type != END && tmp->type != SEPARATOR)
+			error_syntax(tk, d);
+		if (tmp && tmp->type == SEPARATOR)
+			tmp = tmp->next;
 	}
-	if (tmp->type != END)
+	if (i < d->op[tk->n_op].n_arg)
 		error_syntax(tk, d);
+	if (!tmp || tmp->type != END)
+		error_end(tk, d, tmp);
 	return (tmp);
 }
 
@@ -149,6 +165,7 @@ void		ft_syntax(t_data *d)
 {
 	t_token		*tk;
 
+//	print_d(d);
 	tk = ft_get_cmd(d);
 	free_cmd_from_list(d, tk);
 	while (tk)
@@ -156,10 +173,7 @@ void		ft_syntax(t_data *d)
 		if (tk->n_op >= 0)
 			tk = ft_args(tk, d);
 		else if(tk && tk->type != END && tk->type != LABEL)
-		{
 			error_syntax(tk, d);
-			ft_printf("ff:\n");
-		}
 		tk = tk->next;
 	}
 //	ft_printf("name [%s]\ncomment [%s]\n", d->header->prog_name, d->header->comment);

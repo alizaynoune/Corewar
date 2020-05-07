@@ -1,0 +1,3 @@
+.name"ali"
+.comment"test"
+ld %3, r4

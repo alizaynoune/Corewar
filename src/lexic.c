@@ -240,11 +240,11 @@ int		check_token(t_data *d, char c)
 	int	ret;
 
 	ret = is_cmd(d, c);
-	if (ret == 0 && (c == ' ' || c == '\t' || c == '\n' || c == '%' || c == ';'))
+	if (ret == 0 && (c == ' ' || c == '\t' || c == '\n' || c == '%' || c == ';' || !c))
 		ret = is_instruction(d);
 	if (ret == 0 &&  (c == LABEL_CHAR))
 		ret = is_label(d);
-	if (!ret && (c == SEPARATOR_CHAR || c == '\n' || c == ' ' || c == '\t'))
+	if (!ret && (c == SEPARATOR_CHAR || c == '\n' || c == ' ' || c == '\t' || !c))
 		ret = is_arguments(d);
 	if (ret >= 0 && c == SEPARATOR_CHAR)
 		ret = is_separator(d);
@@ -275,14 +275,18 @@ void		print_d(t_data *d)//test
 void		read_file(t_data *d)
 {
 	char	c;
+	int	loop;
 
+	loop = 1;
 	ft_bzero(&d->line, sizeof(d->line));
 	if (!(d->line.str = ft_memalloc(MEM_SIZE)))
 		error_malloc(d);
 	d->line.n_l = 1;
 	d->line.n_c = 1;
-	while (read(d->fd_assm, &c, 1) > 0)
+	while (loop > 0)
 	{
+		if (!(loop = read(d->fd_assm, &c, 1)))
+			c = 0;
 		if (check_token(d, c))
 			d->line.i = 0;
 		else
