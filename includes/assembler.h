@@ -89,9 +89,7 @@ typedef struct			s_operation
 {
 	char			*name;
 	short			n_arg;
-	short			arg1;
-	short			arg2;
-	short			arg3;
+	short			args[3];
 }				t_operation;
 
 typedef struct		s_data

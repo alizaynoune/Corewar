@@ -166,9 +166,9 @@ int		digit_dir(char *str)
 	i = str[0] == '-' ? 1: 0;
 	while (str[i] == '0')
 		i++;
-	while (ft_isdigit(str[i++]))
+	while (ft_isdigit(str[i + nbr]))
 		nbr++;///len nuber of dir
-	if (str[i])
+	if (str[i + nbr])
 		return (0);
 	return (1);
 }

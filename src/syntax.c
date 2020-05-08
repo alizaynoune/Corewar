@@ -13,12 +13,15 @@ void		print_code_arg(int arg)
 
 void		print_right_syntax(t_operation op)
 {
-	ft_printf("  => The right syntax of \"%s\" is [ ",op.name);
-	op.arg1 > 0 ? print_code_arg(op.arg1): 0;
-	op.arg2 > 0 ? ft_printf(", "): 0;
-	op.arg2 > 0 ? print_code_arg(op.arg2): 0;
-	op.arg3 > 0 ? ft_printf(", "): 0;
-	op.arg3 > 0 ? print_code_arg(op.arg3): 0;
+	int	i;
+
+	i = 0;
+	ft_printf("  => The right arg's syntax of \"%s\" is [ ",op.name);
+	while (op.args[i])
+	{
+		print_code_arg(op.args[i++]);
+		op.args[i] > 0 && i < op.n_arg ? ft_printf(", "): 0;
+	}
 	ft_printf(" ]");
 }
 
@@ -43,7 +46,7 @@ void		error_end(t_token *tk, t_data *d, t_token *tmp)
 	exit(1);
 }
 
-int		chek_arg(int op, int arg)
+int		check_arg(int op, int arg)
 {
 	int	cmp;
 
@@ -63,12 +66,8 @@ int		error_args(int arg, t_operation op, int i)
 		ar = _IND;
 	else
 		ar = arg;
-	if (i == 0)
-	       return (chek_arg(op.arg1, ar));
-	if (i == 1)
-		return (chek_arg(op.arg2, ar));
-	if (i == 2)
-		return (chek_arg(op.arg3, ar));
+	if (op.args[i])
+		return (check_arg(op.args[i], ar));
 	return (0);
 }
 
