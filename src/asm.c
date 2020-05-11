@@ -61,7 +61,9 @@ int		main(int ac, char **av)
 		error_malloc(data);
 	data->op = op;
 	ft_open_file(data, av[ac - 1]);
+	// read file and check lexical
 	read_file(data);
+	// check syntax
 	ft_syntax(data);
 	//print_d(data);
 	free_data(data);

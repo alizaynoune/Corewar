@@ -1,5 +1,5 @@
 #include "assembler.h"
-
+// stock to token
 void		ft_to_token(t_data *d, int type, char *cont, short op)
 {
 	t_token		*new;
@@ -8,14 +8,19 @@ void		ft_to_token(t_data *d, int type, char *cont, short op)
 	tmp = d->token;
 	if (!(new = ft_memalloc(sizeof(t_token))))
 		error_malloc(d);
+	// type == LABEL or STRING or SEPARATOR or arg......
 	new->type = type;
+	// cont == content lik string or name of label .....
 	if (!(new->content = ft_strdup(cont)))
 	{
 		free(new);
 		error_malloc(d);
 	}
+	// number of line
 	new->n_l = d->line.n_l;
+	// possition of charater
 	new->n_c = d->line.n_c;
+	// op == number of arg of operation: like [ld _DIR, REG] has 2 args
 	new->n_op = op;
 	if (!d->token)
 		d->token = new;
@@ -26,7 +31,7 @@ void		ft_to_token(t_data *d, int type, char *cont, short op)
 		tmp->next = new;
 	}
 }
-
+// check is comment or name
 int		is_cmd(t_data *d, char c)
 {
 	if (c != '\t' && c != ' ' && c != '\"' && c != '\n')
@@ -40,7 +45,7 @@ int		is_cmd(t_data *d, char c)
 	d->line.i = 0;
 	return (1);
 }
-
+// read string
 int		is_str(t_data *d)
 {
 	char	c;
@@ -65,7 +70,7 @@ int		is_str(t_data *d)
 	d->line.n_c = n_c + 1;
 	return (ret);
 }
-
+// end of line
 int		is_end(t_data *d)
 {
 	char	c;
@@ -82,7 +87,7 @@ int		is_end(t_data *d)
 	d->line.n_c = 1;
 	return (1);
 }
-
+// skip space and tap
 int		is_spc(t_data *d)
 {
 	char	c;
@@ -97,9 +102,10 @@ int		is_spc(t_data *d)
 		lseek(d->fd_assm, -1, SEEK_CUR);
 	return (1);
 }
-
+// check is label
 int		is_label(t_data *d)
 {
+	// if index 0 == % is direct label if index 0 == NULL is indirect label
 	if (d->line.str[0] == '%' || !d->line.str[0])
 		return (0);
 	if (!(ft_strchrstr(LABEL_CHARS, d->line.str)))
@@ -110,7 +116,7 @@ int		is_label(t_data *d)
 	d->line.i = 0;
 	return (1);
 }
-
+// check is instruction
 int		is_instruction(t_data *d)
 {
 	int	i;
@@ -139,7 +145,7 @@ int		is_separator(t_data *d)
 	d->line.n_c++;
 	return (1);
 }
-
+// skip comment
 int		is_comment(t_data *d)
 {
 	char	c;
@@ -156,7 +162,7 @@ int		is_comment(t_data *d)
 	}
 	return (1);
 }
-
+// check number of _DIR
 int		digit_dir(char *str)
 {
 	int	i;
@@ -172,7 +178,7 @@ int		digit_dir(char *str)
 		return (0);
 	return (1);
 }
-
+// check is _DIR
 int		is_direct(t_data *d)
 {
 	if (d->line.str[1] == LABEL_CHAR)
@@ -190,7 +196,7 @@ int		is_direct(t_data *d)
 	d->line.i = 0;
 	return (1);
 }
-
+//check is _REG
 int		is_registr(t_data *d)
 {
 	if (!ft_all_digit(&d->line.str[1]))
@@ -202,7 +208,7 @@ int		is_registr(t_data *d)
 	ft_strclr(d->line.str);
 	return (1);
 }
-
+// check is _IND
 int		is_indirect(t_data *d)
 {
 	if (d->line.str[0] == LABEL_CHAR)
@@ -220,7 +226,7 @@ int		is_indirect(t_data *d)
 	d->line.i = 0;
 	return (1);
 }
-
+// check is arguments _DIR | _IND | REG
 int		is_arguments(t_data *d)
 {
 	int	ret;
@@ -239,25 +245,35 @@ int		check_token(t_data *d, char c)
 {
 	int	ret;
 
+	//check is comment or name
 	ret = is_cmd(d, c);
+	// check is instruction
 	if (ret == 0 && (c == ' ' || c == '\t' || c == '\n' || c == '%' || c == ';' || !c))
 		ret = is_instruction(d);
+	// check is label
 	if (ret == 0 &&  (c == LABEL_CHAR))
 		ret = is_label(d);
+	// check is argument like _DIR or _REG or _IND
 	if (!ret && (c == SEPARATOR_CHAR || c == '\n' || c == ' ' || c == '\t' || !c))
 		ret = is_arguments(d);
+	// check is separator ","
 	if (ret >= 0 && c == SEPARATOR_CHAR)
 		ret = is_separator(d);
+	// check is space
 	if (ret >= 0 && (c == '\t' || c == ' '))
 		ret = is_spc(d);
+	// check is string
 	if (ret >= 0 && (c == '\"'))
 		ret = is_str(d);
+	// check is end of line
 	if (ret >= 0 && (c == '\n'))
 		ret = is_end(d);
+	// check is comment start white "#" or ";"
 	if (c == COMMENT_CHAR || c == ';')
 		ret = is_comment(d);
 	if (ret == -1)
 		ft_error_lixic(d);
+	// if c == "%" and ret == 1 Ex: [ld%10, r3] no space butwen ld and %
 	ret == 1 && c == '%' ? lseek(d->fd_assm, -1, SEEK_CUR) : 0;
 	return (ret);
 }
@@ -287,6 +303,7 @@ void		read_file(t_data *d)
 	{
 		if (!(loop = read(d->fd_assm, &c, 1)))
 			c = 0;
+		//check is define
 		if (check_token(d, c))
 			d->line.i = 0;
 		else
