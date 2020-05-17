@@ -4,11 +4,11 @@ void		print_code_arg(int arg)
 {
 	arg == _REG ? ft_printf("REG"): 0;
 	arg == _DIR ? ft_printf("DIR"): 0;
-	arg == _REG + _DIR ? ft_printf("REG | DIR"): 0;
+	arg == (_REG | _DIR) ? ft_printf("REG | DIR"): 0;
 	arg == _IND ? ft_printf("IND"): 0;
-	arg == _REG + _IND ? ft_printf("REG | IND"): 0;
-	arg == _IND + _DIR ? ft_printf("IND | DIR"): 0;
-	arg == _REG + _DIR + _IND ? ft_printf("REG | DIR | IND"): 0;
+	arg == (_REG | _IND) ? ft_printf("REG | IND"): 0;
+	arg == (_IND | _DIR) ? ft_printf("IND | DIR"): 0;
+	arg == (_REG | _DIR | _IND) ? ft_printf("REG | DIR | IND"): 0;
 }
 // print right syntax if it's error syntax
 void		print_right_syntax(t_operation op)
@@ -48,10 +48,7 @@ void		error_end(t_token *tk, t_data *d, t_token *tmp)
 // check arg is define in instruction
 int		check_arg(int op, int arg)
 {
-	int	cmp;
-
-	cmp = op - arg;
-	if (cmp >= 0 && cmp <= 6 && cmp != arg)
+	if ((op & arg) == arg)
 		return (1);
 	return (0);
 }
