@@ -1,0 +1,17 @@
+ft_dprintf it's recod dprintf
+
+
+usage : ft_dprintf("%[flag][width][.precision][length]specifier")
+
+	flag : [0 + - # space]
+	width : [number]
+	.precision : [number]
+	length : [l ll h hh]
+	specifier : [cspdiouxb CSPDIOUXB] => b and B [print binary from decimal]
+
+run make
+if you want test it you can find cheker in path [cheker]
+
+usage : checker
+	./checker.sh [specifier] by default all specifier
+

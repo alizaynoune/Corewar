@@ -1,5 +1,5 @@
 NAME = test
-GCC = gcc -Wall -Werror -Wextra
+GCC = gcc
 INC =  includes/
 INC_L = libft/includes
 P_LIB = libft/
@@ -8,9 +8,11 @@ SRC = asm.c	\
       error.c	\
       free.c	\
       lexic.c	\
-      syntax.c
+      syntax.c	\
+      code.c	\
+      buf.c
 
 OBJ = $(addprefix $(P_SRC), $(SRC))
 
 all:
-	$(GCC) $(OBJ) -L $(P_LIB) -lall -I $(INC) -I $(INC_L) -o $(NAME)
+	$(GCC) $(OBJ) -L $(P_LIB) -lftdprintf -I $(INC) -I $(INC_L) -o $(NAME)

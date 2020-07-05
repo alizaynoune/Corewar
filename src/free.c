@@ -1,25 +1,69 @@
 #include "assembler.h"
 
-void		error_malloc(t_data *d)
+void		error_malloc(t_all *d)
 {
 	d->line.str != NULL ? ft_strdel(&d->line.str): 0;
-	close(d->fd_assm);
-	free_data(d);
+	free_error_data(d);
 	message_exit("Error malloc");
 }
 
-void		free_data(t_data *d)
+void		free_label(t_label *label)
 {
-	t_token		*tmp;
+	t_label		*ptr;
 
-	while (d->token)
+	while (label)
 	{
-		tmp = d->token;
-		d->token = d->token->next;
-		ft_strdel(&tmp->content);
-		free(tmp);
+		ptr = label;
+		label = label->next;
+		free(ptr->name);
+		free(ptr);
 	}
-	if (d->header)
-		free(d->header);
+}
+
+void		free_ins(t_instruction *ins)
+{
+	t_instruction	*ptr;
+
+	while (ins)
+	{
+		ptr = ins;
+		ins = ins->next;
+		free(ptr);
+	}
+}
+
+void		free_token(t_token *token)
+{
+	t_token		*ptr;
+
+	while (token)
+	{
+		ptr = token;
+		token = token->next;
+		ft_strdel(&ptr->content);
+		free(ptr);
+	}
+}
+
+void		free_error_data(t_all *d)
+{
+	close(d->fd_assm);
+	d->buff ? free(d->buff) : 0;
+//	free_token(d->token);
+//	(d->header) ? free(d->header) : 0;
+	(d->label) ? free_label(d->label) : 0;
+	(d->ins) ? free_ins(d->ins) : 0;
+	free(d);
+}
+
+void		free_success(t_all *d)
+{
+	close(d->fd_assm);
+	close(d->fd_exec);
+	free(d->name_exec);
+	free(d->buff);
+	free(d->header);
+	free_label(d->label);
+	free_ins(d->ins);
 	free(d);
 }

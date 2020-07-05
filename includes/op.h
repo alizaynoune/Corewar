@@ -20,8 +20,10 @@
 #define CHAMP_MAX_SIZE				(MEM_SIZE / 6)
 
 #define COMMENT_CHAR				'#'
+#define ALT_COMMENT_CHAR			';'
 #define LABEL_CHAR				':'
-#define DIRECT_CHAR				'%'
+#define DIR_CHAR				'%'
+#define REG_CHAR				'r'
 #define SEPARATOR_CHAR				','
 
 #define LABEL_CHARS				"abcdefghijklmnopqrstuvwxyz_0123456789"
@@ -41,12 +43,12 @@
 */
 
 typedef char	t_arg_type;
-
+/*
 #define T_REG					1
 #define T_DIR					2
 #define T_IND					4
 #define T_LAB					8
-
+*/
 /*
 **
 */

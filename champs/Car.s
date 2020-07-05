@@ -1,5 +1,5 @@
 #deassembler par msa 1.8, made by joe
-iiii.name 				"Tching tching(Intercepteur), 
+.name 				"Tching tching(Intercepteur), 
 
 Bouh!Bouh!(bruits d'anti-jeu)"
 .comment""

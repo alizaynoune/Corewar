@@ -18,28 +18,13 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include "op.h"
-# include "ft_printf.h"
+# include "ft_dprintf.h"
 
 # define MAX_OP_PARAMS		(3)
 
-/*
- **	Codes for possible types of tokens
- **
- **	(1 << 0) `label:`
- **	(1 << 1) `live|ld|...`
- **	(1 << 2) `r[unsigned numeric literal]`
- **	(1 << 3) `,`
- **	(1 << 4) `%:label`
- **	(1 << 5) `%[numeric literal]`
- **	(1 << 6) `numeric literal`
- **	(1 << 7) `:label`
- **	(1 << 8) `Whitespaces`
- **	(1 << 9) `String literal`
- */
-
 #define _REG			(1)
-#define _DIR			(2)
-#define _IND			(4)
+#define _IND			(2)
+#define _DIR			(4)
 #define _DIR_L			(8)
 #define _IND_L			(16)
 #define LABEL			(32)
@@ -49,30 +34,17 @@
 #define COMM			(512)
 #define END			(1024)
 
-typedef struct		s_arg
-{
-	int		type;
-	int		value;
-	int8_t		separator;
-	struct s_arg	*next;
-}			t_arg;
-
-typedef struct			s_instruction
-{
-	char			*lebl;
-	short			nb_arg;
-	int			intstruct;
-	t_arg			*arg;
-	struct s_instruction	*next;
-}				t_instruction;
+#define _BUFF			(100)
 
 typedef struct		s_token
 {
 	int		type;//stores the code of the type
 	char		*content;
-	size_t		n_l;
-	size_t		n_c;
-	int		n_op;
+	size_t		nbr_l;
+	size_t		pos;
+	int		index_op;
+	short		nbr_param;
+	size_t		ofset;
 	struct s_token	*next;
 }			t_token;
 
@@ -80,8 +52,8 @@ typedef struct		s_line
 {
 	char		*str;
 	size_t		nb_line;
-	size_t		n_l;
-	size_t		n_c;
+	size_t		nbr_l;
+	size_t		pos;
 	size_t		i;
 }			t_line;
 
@@ -89,46 +61,61 @@ typedef struct			s_operation
 {
 	char			*name;
 	short			n_arg;
-	short			args[3];
+	short			args[MAX_OP_PARAMS];
+	short			cod_op;
+	short			cycles;
+	char			*desc;
+	short			arg_type;
+	short			s_dir;
 }				t_operation;
 
-typedef struct		s_data
+typedef struct			s_instruction
 {
-	t_operation	*op;
+	short			op_code;
+	unsigned int		param[MAX_OP_PARAMS];
+	short			param_type[MAX_OP_PARAMS];
+	short			s_param[MAX_OP_PARAMS];
+	short			type;
+	short			nbr_param;
+	unsigned int		ofset;
+	struct s_instruction	*next;
+}				t_instruction;
+
+typedef struct			s_label
+{
+	char			*name;
+	unsigned int		ofset;
+	struct s_label		*next;
+}				t_label;
+
+typedef struct		s_all
+{
 	int		fd_assm;
 	int		fd_exec;
+	char		*name_exec;
 	header_t	*header;
 	t_line		line;
 	t_token		*token;
-	t_instruction	*instruction;
-}			t_data;
+	t_token		*ptr_token;
+	t_label		*label;
+	t_instruction	*ins;
+	size_t		size;
+	char		*buff;
+	size_t		pos;
+}			t_all;
 
-/*typedef struct		s_instruction
-  {
-  char			*label;
-  char			*operation;
-  short			nparams;
-  unsigned char	params[MAX_OP_PARAMS];	
-  int				size;
-  }					t_instruction;
+extern t_operation	op_tab[];
 
-  typedef struct		s_op
-  {
-  char			*operation;
-  short			nparams;
-  unsigned char	params[MAX_OP_PARAMS];	
-  unsigned char	opcode;
-  short			exec_cycle;
-  char			*description;
-//... 2 other fields;
-}					t_op;
-*/
-void		read_file(t_data *d);
-void		ft_error_lixic(t_data *d);
-void		error_malloc(t_data *d);
+void		read_file(t_all *d);
+void		ft_error_lixic(t_all *d);
+void		error_malloc(t_all *d);
 void		message_exit(char *str);
-void		free_data(t_data *d);
-void		ft_syntax(t_data *d);
-void		print_d(t_data *d); //test
-
+void		free_error_data(t_all *d);
+void		free_token(t_token *token);
+void		ft_syntax(t_all *d);
+void		print_d(t_all *d); //test
+void		init_code(t_all *d);
+void		_unknown_label(t_all *d, t_instruction *ptr, t_token *tk);
+void		buf_code(t_all *d);
+void		free_success(t_all *d);
 #endif
