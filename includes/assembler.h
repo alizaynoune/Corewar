@@ -34,7 +34,7 @@
 #define COMM			(512)
 #define END			(1024)
 
-#define _BUFF			(100)
+#define _BUFF			(10)
 
 typedef struct		s_token
 {
@@ -55,6 +55,7 @@ typedef struct		s_line
 	size_t		nbr_l;
 	size_t		pos;
 	size_t		i;
+	size_t		size;
 }			t_line;
 
 typedef struct			s_operation

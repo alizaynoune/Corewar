@@ -31,6 +31,18 @@ void		tokenizer(t_all *d, int type, char *cont, short op)
 		d->ptr_token = d->ptr_token->next;
 	}
 }
+
+void		doble_size(t_all *d)
+{
+	char	*ptr;
+
+	ptr = d->line.str;
+	if (!(d->line.str = (char *)ft_dynamicarray(d->line.str, d->line.size)))
+		error_malloc(d);
+	d->line.size *= 2;
+	free(ptr);
+}
+
 // check is comment or name
 int		is_cmd(t_all *d, char c)
 {
@@ -59,6 +71,7 @@ int		is_str(t_all *d)
 	while (read(d->fd_assm, &c, 1) > 0 && c != '\"')
 	{
 		d->line.str[d->line.i++] = c;
+		d->line.i == d->line.size ? doble_size(d) : 0;
 		c == '\n' ? d->line.nbr_l += 1 : 0;
 		pos = c == '\n' ? 0 : pos + 1;
 	}
@@ -297,6 +310,7 @@ void		read_file(t_all *d)
 		error_malloc(d);
 	d->line.nbr_l = 1;
 	d->line.pos = 1;
+	d->line.size = _BUFF;
 	while (loop > 0)
 	{
 		if (!(loop = read(d->fd_assm, &c, 1)))

@@ -71,7 +71,8 @@ LIBFT_MEM = 		ft_memalloc.c				\
 	    		ft_memcpy.c				\
 	    		ft_memdel.c				\
 	    		ft_memmove.c				\
-	    		ft_memset.c
+	    		ft_memset.c				\
+			ft_dynamicarray.c
 
 LIBFT_PUT = 		ft_putchar.c				\
 	    		ft_putchar_fd.c				\

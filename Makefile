@@ -1,5 +1,5 @@
 NAME = test
-GCC = gcc
+GCC = gcc -g
 INC =  includes/
 INC_L = libft/includes
 P_LIB = libft/
