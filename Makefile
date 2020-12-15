@@ -1,18 +1,38 @@
-NAME = test
-GCC = gcc -g
-INC =  includes/
-INC_L = libft/includes
-P_LIB = libft/
-P_SRC = src/
-SRC = asm.c	\
-      error.c	\
-      free.c	\
-      lexic.c	\
-      syntax.c	\
-      code.c	\
-      buf.c
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: yelazrak <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2020/11/30 13:22:29 by yelazrak          #+#    #+#              #
+#    Updated: 2020/11/30 17:09:54 by akhossan         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-OBJ = $(addprefix $(P_SRC), $(SRC))
+NAME = asm vm
 
-all:
-	$(GCC) $(OBJ) -L $(P_LIB) -lftdprintf -I $(INC) -I $(INC_L) -o $(NAME)
+ASSEMBLER_DIR = assembler
+VM_DIR = vm
+
+all: $(NAME)
+
+asm: 
+	@make -C $(ASSEMBLER_DIR)
+
+vm: 
+	@make -C $(VM_DIR)
+
+clean: 
+	@make clean -C $(ASSEMBLER_DIR)
+	@make clean -C $(VM_DIR)
+
+fclean:
+	@make fclean -C $(ASSEMBLER_DIR)
+	@make fclean -C $(VM_DIR)
+
+re:
+	@make -C $(ASSEMBLER_DIR) re
+	@make -C $(VM_DIR) re
+
+.PHONY: re all asm vm clean fclean
